@@ -6,6 +6,7 @@ import np.com.satyarajawasthi.smartcreditmanager.util.EncryptionUtil;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,7 +27,7 @@ import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.getCon
 public class UserRepository {
     private static final Logger log = Logger.getLogger(UserRepository.class.getName());
     private static final String KEY = "5a98beed71b7d65e10d914d3456f25b1";
-    private static final String CONFIG_URL = String.valueOf(UserRepository.class.getResource("/np/com/satyarajawasthi/smartcreditmanager/config.properties"));
+    private static final String CONFIG_URL = "/np/com/satyarajawasthi/smartcreditmanager/config.properties";
     private static final String DEFAULT_USERNAME = "root";
     private static final String DEFAULT_PASSWORD = "root";
     private static final String DEFAULT_PASSPHRASE = "DEFAULT";
@@ -111,11 +112,11 @@ public class UserRepository {
                 createUserTable(connection);
                 insertInitialUserRecords(connection);
                 restrictUserInsertion(connection);
-
-                markPasswordAsUpdated();
-                markFirstLoginInPropertiesFile();
-
                 connection.commit(); // Commit the transaction
+
+//                markPasswordAsUpdated();
+//                markFirstLoginInPropertiesFile();
+
                 log.info("Users table created, default user inserted, and insertion restricted.");
                 return true; // Initialization successful
             }
@@ -147,7 +148,7 @@ public class UserRepository {
     }
 
     private static boolean isFirstLoginInPropertiesFile() {
-        try (FileInputStream input = new FileInputStream(CONFIG_URL)) {
+        try (InputStream input =  UserRepository.class.getResourceAsStream(CONFIG_URL)) {
             Properties properties = new Properties();
             properties.load(input);
             return Boolean.parseBoolean(properties.getProperty("isFirstLogin"));
