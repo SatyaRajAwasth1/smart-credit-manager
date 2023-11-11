@@ -8,6 +8,49 @@ Modern, open-source in hand desktop application to manage your credentials in a 
 
 Credential Manager is a user-friendly, offline, and local PC-based application designed to help you securely store and manage login credentials, including usernames, passwords, and associated remarks. With its intuitive interface and powerful features, it provides a convenient and organized way to store your sensitive information.
 
+## Project Structure
+<pre>
+smart-credit-manager/
+|-- src/
+|   |-- main/
+|       |-- java/
+|           |-- np/com/satyarajawasthi/smartcreditmanager/
+|               |-- controller/
+|                   |-- LoginController.java
+|                   |-- DashboardController.java
+|               |-- model/
+|                   |-- User.java
+|                   |-- Credential.java
+|               |-- repository/
+|                   |-- UserRepository.java
+|               |-- util/
+|                   |-- DatabaseUtil.java
+|                   |-- EncryptionUtil.java
+|               |-- manager/
+|                   |-- CredentialManager.java
+|                   |-- CredentialManagerImpl.java
+|               |-- Application.java
+|-- test/
+|   |-- (unit tests to be added here)
+|-- src/
+|   |-- main/
+|       |-- resources/
+|           |-- np/com/satyarajawasthi/smartcreditmanager/
+|               |-- config.properties
+|               |-- database/
+|                   |-- SmartCreditManagerDB.db
+|               |-- css/
+|                   |-- styles.css
+|               |-- fxml/
+|                   |-- login.fxml
+|                   |-- dashboard.fxml
+|               |-- images/
+|                   |-- profile.png
+|-- .gitignore
+|-- LICENSE
+|-- README.md
+</pre>
+
 ### Features
 
 - User-friendly interface
