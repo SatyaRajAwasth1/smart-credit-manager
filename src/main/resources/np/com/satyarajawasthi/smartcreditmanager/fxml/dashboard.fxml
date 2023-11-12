@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+
+<?import javafx.scene.control.TextField?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="np.com.satyarajawasthi.smartcreditmanager.controller.DashboardController">
+
+    <top>
+        <!-- HBox for search -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <TextField fx:id="searchField" promptText="Search..." />
+            <Button text="Search" onAction="#searchCredential"/>
+        </HBox>
+    </top>
+
+    <center>
+        <TableView fx:id="credentialTable">
+            <columns>
+                <TableColumn text="ID" fx:id="idColumn"/>
+                <TableColumn text="Tool Name" fx:id="toolNameColumn"/>
+                <TableColumn text="Username" fx:id="usernameColumn"/>
+                <TableColumn text="Password" fx:id="passwordColumn"/>
+                <TableColumn text="Email" fx:id="emailColumn"/>
+                <TableColumn text="Remarks" fx:id="remarksColumn"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <!-- Use Insets for better padding -->
+        <HBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Button text="Add" onAction="#addCredential"/>
+            <Button text="Edit" onAction="#editCredential"/>
+            <Button text="Delete" onAction="#deleteCredential"/>
+        </HBox>
+    </bottom>
+
+    <!-- Add overall padding to the BorderPane -->
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+</BorderPane>
