@@ -3,7 +3,6 @@ package np.com.satyarajawasthi.smartcreditmanager.repository;
 import np.com.satyarajawasthi.smartcreditmanager.model.User;
 import np.com.satyarajawasthi.smartcreditmanager.util.EncryptionUtil;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +24,7 @@ import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.getCon
  * @since 10/24/2023
  */
 public class UserRepository {
-    private static final Logger log = Logger.getLogger(UserRepository.class.getName());
+    private static final Logger logger = Logger.getLogger(UserRepository.class.getName());
     private static final String KEY = "5a98beed71b7d65e10d914d3456f25b1";
     private static final String CONFIG_URL = "/np/com/satyarajawasthi/smartcreditmanager/config.properties";
     private static final String DEFAULT_USERNAME = "root";
@@ -45,7 +44,7 @@ public class UserRepository {
         try (PreparedStatement statement = connection.prepareStatement(createTableQuery)) {
             statement.executeUpdate();
         }
-        log.info("Users table created.");
+        logger.info("Users table created.");
     }
 
     public static void insertInitialUserRecords(Connection connection) throws SQLException {
@@ -60,7 +59,7 @@ public class UserRepository {
             statement.setInt(4, 0);
             statement.executeUpdate();
         }
-        log.info("Initial user records inserted.");
+        logger.info("Initial user records inserted.");
     }
 
     public static void restrictUserInsertion(Connection connection) throws SQLException {
@@ -74,7 +73,7 @@ public class UserRepository {
         try (PreparedStatement statement = connection.prepareStatement(restrictInsertionQuery)) {
             statement.executeUpdate();
         }
-        log.info("User insertion restricted.");
+        logger.info("User insertion restricted.");
     }
 
     public static User getUser() throws SQLException {
@@ -117,7 +116,7 @@ public class UserRepository {
 //                markPasswordAsUpdated();
 //                markFirstLoginInPropertiesFile();
 
-                log.info("Users table created, default user inserted, and insertion restricted.");
+                logger.info("Users table created, default user inserted, and insertion restricted.");
                 return true; // Initialization successful
             }
         } catch (SQLException e) {
@@ -125,12 +124,12 @@ public class UserRepository {
                 try {
                     connection.rollback(); // Rollback in case of an error
                 } catch (SQLException rollbackException) {
-                    log.log(Level.WARNING, "Error during rollback: {0}", rollbackException.getMessage());
+                    logger.log(Level.WARNING, "Error during rollback: {0}", rollbackException.getMessage());
                 } finally {
                     closeConnection();
                 }
             }
-            log.log(Level.SEVERE, "Error during database initialization: {0}", e.getMessage());
+            logger.log(Level.SEVERE, "Error during database initialization: {0}", e.getMessage());
         } finally {
             closeConnection();
         }
@@ -153,7 +152,7 @@ public class UserRepository {
             properties.load(input);
             return Boolean.parseBoolean(properties.getProperty("isFirstLogin"));
         } catch (IOException e) {
-            log.log(Level.SEVERE, "Error reading from the properties file: {0}", e.getMessage());
+            logger.log(Level.SEVERE, "Error reading from the properties file: {0}", e.getMessage());
         }
         return true;
     }
@@ -164,7 +163,7 @@ public class UserRepository {
             properties.setProperty("isFirstLogin", String.valueOf(false));
             properties.store(output, null);
         } catch (IOException e) {
-            log.log(Level.SEVERE, "Error updating the properties file: {0}", e.getMessage());
+            logger.log(Level.SEVERE, "Error updating the properties file: {0}", e.getMessage());
         }
     }
 
