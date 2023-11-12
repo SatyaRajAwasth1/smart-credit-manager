@@ -9,6 +9,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * THis class will be removed later is being used just for test purposes ( running this class will direct show Dashboard and its functionality)
+ */
 public class DashboardApp extends Application {
 
     @Override
