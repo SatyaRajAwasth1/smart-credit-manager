@@ -21,7 +21,7 @@ Please review our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing. Be 
 
 ## Reporting Issues
 
-If you encounter any issues or have suggestions, please open an [issue](../../issues) on the repository.
+If you encounter any issues or have suggestions, please open an [issue](https://github.com/SatyaRajAwasth1/smart-credit-manager/issues) on the repository.
 
 ## Contact
 
@@ -29,6 +29,6 @@ If you have questions or need assistance, feel free to [contact us](mailto:info@
 
 ## License
 
-By contributing to Credential Manager, you agree that your contributions will be licensed under the MIT License. For more details, see the [LICENSE.md](LICENSE) file.
+By contributing to Smart Credit Manager, you agree that your contributions will be licensed under the MIT License. For more details, see the [LICENSE.md](LICENSE) file.
 
 We appreciate your contributions to make Credential Manager better!
