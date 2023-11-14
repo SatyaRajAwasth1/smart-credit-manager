@@ -99,7 +99,7 @@ public class User {
      *
      * @return 1 if the password is updated, 0 otherwise.
      */
-    public int getIsPasswordUpdated() {
+    public int isPasswordUpdated() {
         return isPasswordUpdated;
     }
 

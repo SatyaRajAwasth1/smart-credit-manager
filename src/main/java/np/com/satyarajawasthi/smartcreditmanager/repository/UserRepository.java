@@ -3,18 +3,12 @@ package np.com.satyarajawasthi.smartcreditmanager.repository;
 import np.com.satyarajawasthi.smartcreditmanager.model.User;
 import np.com.satyarajawasthi.smartcreditmanager.util.EncryptionUtil;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.closeConnection;
 import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.getConnection;
 
 /**
@@ -26,7 +20,6 @@ import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.getCon
 public class UserRepository {
     private static final Logger logger = Logger.getLogger(UserRepository.class.getName());
     private static final String KEY = "5a98beed71b7d65e10d914d3456f25b1";
-    private static final String CONFIG_URL = "/np/com/satyarajawasthi/smartcreditmanager/config.properties";
     private static final String DEFAULT_USERNAME = "root";
     private static final String DEFAULT_PASSWORD = "root";
     private static final String DEFAULT_PASSPHRASE = "DEFAULT";
@@ -100,42 +93,6 @@ public class UserRepository {
         return 0;
     }
 
-    public static boolean isFirstLogin() {
-        Connection connection = null;
-        try {
-            // Check if it's the first login by reading from the properties file
-            if (isFirstLoginInPropertiesFile()) {
-                connection = getConnection();
-                connection.setAutoCommit(false); // Start a transaction
-
-                createUserTable(connection);
-                insertInitialUserRecords(connection);
-                restrictUserInsertion(connection);
-                connection.commit(); // Commit the transaction
-
-//                markPasswordAsUpdated();
-//                markFirstLoginInPropertiesFile();
-
-                logger.info("Users table created, default user inserted, and insertion restricted.");
-                return true; // Initialization successful
-            }
-        } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback(); // Rollback in case of an error
-                } catch (SQLException rollbackException) {
-                    logger.log(Level.WARNING, "Error during rollback: {0}", rollbackException.getMessage());
-                } finally {
-                    closeConnection();
-                }
-            }
-            logger.log(Level.SEVERE, "Error during database initialization: {0}", e.getMessage());
-        } finally {
-            closeConnection();
-        }
-        return false; // Initialization failed
-    }
-
     public static void markPasswordAsUpdated() throws SQLException {
         int currentCount = getPasswordUpdatedValue();
         String query = "UPDATE users SET is_password_updated = ?";
@@ -146,24 +103,12 @@ public class UserRepository {
         }
     }
 
-    private static boolean isFirstLoginInPropertiesFile() {
-        try (InputStream input =  UserRepository.class.getResourceAsStream(CONFIG_URL)) {
-            Properties properties = new Properties();
-            properties.load(input);
-            return Boolean.parseBoolean(properties.getProperty("isFirstLogin"));
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error reading from the properties file: {0}", e.getMessage());
-        }
-        return true;
-    }
-
-    private static void markFirstLoginInPropertiesFile() {
-        try (FileOutputStream output = new FileOutputStream(CONFIG_URL)) {
-            Properties properties = new Properties();
-            properties.setProperty("isFirstLogin", String.valueOf(false));
-            properties.store(output, null);
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error updating the properties file: {0}", e.getMessage());
+    public static boolean isUserTableExists() {
+        try (Connection connection = getConnection();
+             ResultSet resultSet = connection.getMetaData().getTables(null, null, "users", null)) {
+            return resultSet.next(); // If the table exists, result set will have at least one row
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
