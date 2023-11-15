@@ -99,7 +99,7 @@ public class User {
      *
      * @return 1 if the password is updated, 0 otherwise.
      */
-    public int getIsPasswordUpdated() {
+    public int isPasswordUpdated() {
         return isPasswordUpdated;
     }
 
@@ -110,5 +110,16 @@ public class User {
      */
     public void setIsPasswordUpdated(int isPasswordUpdated) {
         this.isPasswordUpdated = isPasswordUpdated;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", passphrase='" + passphrase + '\'' +
+                ", isPasswordUpdated=" + isPasswordUpdated +
+                '}';
     }
 }

@@ -15,7 +15,7 @@
                 <Label text="Login" />
                 <TextField fx:id="usernameField" promptText="Username" />
                 <PasswordField fx:id="passwordField" promptText="Password" />
-                <Button onAction="#login" prefHeight="25.0" prefWidth="112.0" text="Login" />
+                <Button fx:id="loginButton" onAction="#login" prefHeight="25.0" prefWidth="112.0" text="Login" />
                 <Button fx:id="changePasswordButton" onAction="#changePassword" prefHeight="25.0" prefWidth="114.0" text="Change Password" />
                 <Label fx:id="loginMessage" text="" />
             </children>

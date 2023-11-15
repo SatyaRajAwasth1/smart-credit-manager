@@ -1,0 +1,29 @@
+.credential-dialog {
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.credential-dialog-label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.credential-dialog-field {
+    font-size: 14px;
+    width: 100%;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.credential-dialog-save-button {
+    font-size: 14px;
+    background-color: #0646f7;
+    color: white;
+    margin-top: 10px;
+    margin: 0 auto;
+}
