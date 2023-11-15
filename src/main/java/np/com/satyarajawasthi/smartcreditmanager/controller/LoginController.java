@@ -1,11 +1,20 @@
 package np.com.satyarajawasthi.smartcreditmanager.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import np.com.satyarajawasthi.smartcreditmanager.manager.UserManager;
 import np.com.satyarajawasthi.smartcreditmanager.repository.UserRepository;
+
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Controller for the login view.
@@ -26,6 +35,9 @@ public class LoginController {
     private Label loginMessage;
 
     @FXML
+    private Button loginButton;
+
+    @FXML
     private Button changePasswordButton;
 
     /**
@@ -33,10 +45,11 @@ public class LoginController {
      * Sets the label and button text based on the user's first login status.
      */
     public void initialize() {
-        boolean isFirstTimeUser = UserRepository.isFirstLogin();
+        boolean isFirstTimeUser = UserManager.isFirstLogin();
 
         if (isFirstTimeUser) {
             changePasswordButton.setText("Change Password");
+            UserManager.onFirstLogin();
         } else {
             changePasswordButton.setText("Forgot Password");
         }
@@ -51,9 +64,10 @@ public class LoginController {
         String password = passwordField.getText();
 
         if (isValidLogin(username, password)) {
-            loginMessage.setText("Login successful");
+            onSuccessfulLogin();
             // Redirect to the main application screen
         } else {
+            loginMessage.setTextFill(Color.RED);
             loginMessage.setText("Invalid username or password");
         }
     }
@@ -63,7 +77,7 @@ public class LoginController {
      * Implements the logic for changing or recovering the user's password.
      */
     public void changePassword() {
-        // Implement password change or recovery logic here
+        UserManager.showChangeCredentialsDialog();
     }
 
     /**
@@ -77,5 +91,22 @@ public class LoginController {
         // TODO Implement login validation logic here
         // For simplicity, using "root" as the username and password for now
         return username.equals("root") && password.equals("root");
+    }
+
+    private void onSuccessfulLogin() {
+        try {
+            // Load the FXML file of the dashboard
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/np/com/satyarajawasthi/smartcreditmanager/fxml/dashboard.fxml")));
+            // Switch to the dashboard scene
+            Stage primaryStage = (Stage) loginButton.getScene().getWindow();
+            primaryStage.setResizable(true);
+            primaryStage.setTitle("Smart Credit Manager");
+            primaryStage.setMinHeight(600);
+            primaryStage.setMinWidth(800);
+            primaryStage.setScene(new Scene(root));
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

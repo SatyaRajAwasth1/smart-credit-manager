@@ -15,70 +15,71 @@ import javafx.beans.property.StringProperty;
 
 public class Credential {
 
-    private final IntegerProperty id;
-    private final StringProperty toolName;
-    private final StringProperty username;
-    private final StringProperty password;
-    private final StringProperty email;
-    private final StringProperty remarks;
+    private int id;
+    private String toolName;
+    private String username;
+    private String password;
+    private String email;
+    private String remarks;
 
-    public Credential(int id, String toolName, String username, String password, String email, String remarks) {
-        this.id = new SimpleIntegerProperty(id);
-        this.toolName = new SimpleStringProperty(toolName);
-        this.username = new SimpleStringProperty(username);
-        this.password = new SimpleStringProperty(password);
-        this.email = new SimpleStringProperty(email);
-        this.remarks = new SimpleStringProperty(remarks);
+    public Credential() {
     }
 
-    // Getters for JavaFX properties
-    public IntegerProperty idProperty() {
+    public Credential(int id, String toolName, String username, String password, String email, String remarks) {
+        this.id = id;
+        this.toolName = toolName;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.remarks = remarks;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public StringProperty toolNameProperty() {
-        return toolName;
-    }
-
-    public StringProperty usernameProperty() {
-        return username;
-    }
-
-    public StringProperty passwordProperty() {
-        return password;
-    }
-
-    public StringProperty emailProperty() {
-        return email;
-    }
-
-    public StringProperty remarksProperty() {
-        return remarks;
-    }
-
-    // Getters for regular Java properties
-    public int getId() {
-        return id.get();
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getToolName() {
-        return toolName.get();
+        return toolName;
+    }
+
+    public void setToolName(String toolName) {
+        this.toolName = toolName;
     }
 
     public String getUsername() {
-        return username.get();
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
-        return password.get();
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
-        return email.get();
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getRemarks() {
-        return remarks.get();
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }
 

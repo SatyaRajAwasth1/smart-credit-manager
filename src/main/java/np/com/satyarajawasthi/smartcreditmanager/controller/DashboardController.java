@@ -1,13 +1,23 @@
 package np.com.satyarajawasthi.smartcreditmanager.controller;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import np.com.satyarajawasthi.smartcreditmanager.manager.CredentialManagerImpl;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import np.com.satyarajawasthi.smartcreditmanager.manager.UserManager;
 import np.com.satyarajawasthi.smartcreditmanager.model.Credential;
 import np.com.satyarajawasthi.smartcreditmanager.manager.CredentialManager;
+
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Controller for the dashboard view which will be shown after successful user login
@@ -44,41 +54,104 @@ public class DashboardController {
 
     @FXML
     private void initialize() {
-        credentialManager = new CredentialManagerImpl();
+        credentialManager = new CredentialManager();
         credentialTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         initializeTable();
+        if (UserManager.isFirstLogin()){
+            UserManager.showChangeCredentialsDialog();
+        }
     }
 
     private void initializeTable() {
         // Initialize table columns
-        idColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
-        toolNameColumn.setCellValueFactory(cellData -> cellData.getValue().toolNameProperty());
-        usernameColumn.setCellValueFactory(cellData -> cellData.getValue().usernameProperty());
-        passwordColumn.setCellValueFactory(cellData -> cellData.getValue().passwordProperty());
-        emailColumn.setCellValueFactory(cellData -> cellData.getValue().emailProperty());
-        remarksColumn.setCellValueFactory(cellData -> cellData.getValue().remarksProperty());
+        idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+        toolNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getToolName()));
+        usernameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
+        passwordColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPassword()));
+        emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
+        remarksColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRemarks()));
 
         // Load data into the table
-        credentialTable.getItems().addAll(credentialManager.getAllCredentials());
+        ObservableList<Credential> credentials = credentialManager.getAllCredentials();
+        credentialTable.setItems(credentials);
     }
 
     @FXML
     private void addCredential() {
-        //TODO: Implement logic to show a dialog for adding a new credential
+        openDialog("Add Credential", null);
+        credentialTable.setItems(credentialManager.getAllCredentials());
     }
 
     @FXML
     private void editCredential() {
-        //TODO: Implement logic to show a dialog for editing the selected credential
+        Credential selectedCredential = credentialTable.getSelectionModel().getSelectedItem();
+        if (selectedCredential != null) {
+            openDialog("Edit Credential", selectedCredential);
+            credentialTable.setItems(credentialManager.getAllCredentials());
+        }else {
+            showAlert("Please select a record to edit.", "You haven't selected any credential record.", Alert.AlertType.WARNING);
+        }
     }
 
     @FXML
     private void deleteCredential() {
-        //TODO: Implement logic to delete the selected credential
+        Credential selectedCredential = credentialTable.getSelectionModel().getSelectedItem();
+        if (selectedCredential != null) {
+            boolean confirmed = showConfirmationDialog("Delete Credential", "The selected record wil be permanently deleted.", "Are you sure you want to delete this credential?");
+            if (confirmed) {
+                credentialManager.deleteCredential(selectedCredential.getId());
+                // Reload the data after deletion
+                credentialTable.setItems(credentialManager.getAllCredentials());
+                showAlert("Credential deleted successfully!", "Please add new record if it was mistake.",  Alert.AlertType.INFORMATION);
+            }
+        } else {
+            showAlert("Please select a credential to delete.", "You haven't selected any record.", Alert.AlertType.WARNING);
+        }
     }
 
     public void searchCredential(ActionEvent actionEvent) {
         //TODO: Implement search logic with search by tool name
+    }
+
+    private void openDialog(String title, Credential credential) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/np/com/satyarajawasthi/smartcreditmanager/fxml/credential_dialog.fxml"));
+            Parent root = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle(title);
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initStyle(StageStyle.UTILITY);
+            dialogStage.initOwner(credentialTable.getScene().getWindow());
+
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+
+            CredentialDialogController controller = loader.getController();
+            controller.setCredentialManager(credentialManager);
+            controller.setDialogStage(dialogStage);
+            controller.setCredential(credential);
+
+            dialogStage.showAndWait();
+        } catch ( IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showAlert(String message, String headerText, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setHeaderText(headerText);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    private boolean showConfirmationDialog(String title, String headerText, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(message);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
     }
 }
 
