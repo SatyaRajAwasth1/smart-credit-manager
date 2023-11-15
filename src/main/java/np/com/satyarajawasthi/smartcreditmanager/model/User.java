@@ -111,4 +111,15 @@ public class User {
     public void setIsPasswordUpdated(int isPasswordUpdated) {
         this.isPasswordUpdated = isPasswordUpdated;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", passphrase='" + passphrase + '\'' +
+                ", isPasswordUpdated=" + isPasswordUpdated +
+                '}';
+    }
 }

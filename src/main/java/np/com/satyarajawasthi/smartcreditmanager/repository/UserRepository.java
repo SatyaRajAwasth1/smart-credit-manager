@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.closeConnection;
 import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.getConnection;
 
 /**
@@ -69,16 +70,15 @@ public class UserRepository {
         logger.info("User insertion restricted.");
     }
 
-    public static User getUser() throws SQLException {
+    public static User getUser() {
         String query = "SELECT * FROM users LIMIT 1"; // Limit to 1 record, as there is only one user
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
                 return mapUser(resultSet);
-            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     public static int getPasswordUpdatedValue() throws SQLException {
@@ -103,6 +103,7 @@ public class UserRepository {
         }
     }
 
+
     public static boolean isUserTableExists() {
         try (Connection connection = getConnection();
              ResultSet resultSet = connection.getMetaData().getTables(null, null, "users", null)) {
@@ -112,10 +113,34 @@ public class UserRepository {
         }
     }
 
+    public static void updateUser(User updatedUser)  {
+        String updateUserQuery = """
+                UPDATE users
+                SET username = ?,
+                    password = ?,
+                    passphrase = ?,
+                    is_password_updated = ?
+                WHERE id = ?
+                """;
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(updateUserQuery)) {
+            int passwordUpdatedValue = getPasswordUpdatedValue();
+            statement.setString(1, updatedUser.getUsername());
+            statement.setString(2, EncryptionUtil.encrypt(updatedUser.getPassword(), KEY));
+            statement.setString(3, EncryptionUtil.encrypt(updatedUser.getPassphrase(), KEY));
+            statement.setInt(4, ++passwordUpdatedValue);
+            statement.setInt(5, updatedUser.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.info("Issue updating default credits with: "+updatedUser+ "With error message: "+e.getMessage());
+        }
+        logger.info("User updated successfully.");
+    }
+
     private static User mapUser(ResultSet resultSet) throws SQLException {
         String username = resultSet.getString("username");
-        String password = resultSet.getString("password");
-        String passphrase = resultSet.getString("passphrase");
+        String password = EncryptionUtil.decrypt(resultSet.getString("password"), KEY);
+        String passphrase = EncryptionUtil.decrypt(resultSet.getString("passphrase"), KEY);
         int passwordUpdated = resultSet.getInt("is_password_updated");
         return new User(username, password, passphrase, passwordUpdated);
     }

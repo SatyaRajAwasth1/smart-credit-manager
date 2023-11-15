@@ -77,7 +77,7 @@ public class LoginController {
      * Implements the logic for changing or recovering the user's password.
      */
     public void changePassword() {
-        // Implement password change or recovery logic here
+        UserManager.showChangeCredentialsDialog();
     }
 
     /**

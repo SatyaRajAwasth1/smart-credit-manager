@@ -1,5 +1,13 @@
 package np.com.satyarajawasthi.smartcreditmanager.manager;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import np.com.satyarajawasthi.smartcreditmanager.controller.ChangeCredentialsDialogController;
+import np.com.satyarajawasthi.smartcreditmanager.model.User;
 import np.com.satyarajawasthi.smartcreditmanager.repository.CredentialRepository;
 import np.com.satyarajawasthi.smartcreditmanager.repository.UserRepository;
 
@@ -36,7 +44,8 @@ public class UserManager {
         return false;
     }
 
-    public static void onFirstLogin() {
+    public static void onFirstLogin
+            () {
         Connection connection = null;
         try {
             connection = getConnection();
@@ -47,10 +56,6 @@ public class UserManager {
             UserRepository.restrictUserInsertion(connection);
             CredentialRepository.createCredentialTable(connection);
             connection.commit(); // Commit the transaction
-
-//            TODO: Alert user to change default login credentials
-//                markPasswordAsUpdated();
-//                markFirstLoginInPropertiesFile();
 
             logger.info("Users & credentials table created, default user inserted, and insertion restricted.");
         } catch (SQLException e) {
@@ -69,6 +74,31 @@ public class UserManager {
         }
     }
 
+    public static void showChangeCredentialsDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(UserManager.class.getResource("/np/com/satyarajawasthi/smartcreditmanager/fxml/change_credentials_dialog.fxml"));
+            Parent root = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Change Credentials");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initStyle(StageStyle.UTILITY);
+            dialogStage.initOwner(null); // Set to null or the main stage if you have a reference to it.
+
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+
+            ChangeCredentialsDialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+
+            // Show the dialog and wait for it to be closed
+            dialogStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static boolean isFirstLoginInPropertiesFile() {
         try (InputStream input = UserRepository.class.getResourceAsStream(CONFIG_URL)) {
             Properties properties = new Properties();
@@ -80,7 +110,7 @@ public class UserManager {
         return true;
     }
 
-    private static void markFirstLoginInPropertiesFile() {
+    public static void finalizeFirstLoginSetup() {
         try (FileOutputStream output = new FileOutputStream(CONFIG_URL)) {
             Properties properties = new Properties();
             properties.setProperty("isFirstLogin", String.valueOf(false));
@@ -88,6 +118,24 @@ public class UserManager {
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Error updating the properties file: {0}", e.getMessage());
         }
+
+        // Call incrementPasswordUpdateCount from UserRepository
+        try {
+            UserRepository.markPasswordAsUpdated();
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error incrementing password update count: {0}", e.getMessage());
+        }
+    }
+
+    public static void changeDefaultUser(User updatedUser){
+        User user = UserRepository.getUser();
+        user.setUsername(updatedUser.getUsername());
+        user.setPassphrase(updatedUser.getPassphrase());
+        user.setPassword(updatedUser.getPassword());
+        UserRepository.updateUser(user);
+    }
+    public static User getUser(){
+        return UserRepository.getUser();
     }
 
 }
