@@ -9,6 +9,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -17,6 +19,7 @@ import np.com.satyarajawasthi.smartcreditmanager.model.Credential;
 import np.com.satyarajawasthi.smartcreditmanager.manager.CredentialManager;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -29,6 +32,7 @@ public class DashboardController {
 
     @FXML
     private TableView<Credential> credentialTable;
+
     @FXML
     private TextField searchField;
 
@@ -57,7 +61,7 @@ public class DashboardController {
         credentialManager = new CredentialManager();
         credentialTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         initializeTable();
-        if (UserManager.isFirstLogin()){
+        if (UserManager.isFirstLogin()) {
             UserManager.showChangeCredentialsDialog();
         }
     }
@@ -88,7 +92,7 @@ public class DashboardController {
         if (selectedCredential != null) {
             openDialog("Edit Credential", selectedCredential);
             credentialTable.setItems(credentialManager.getAllCredentials());
-        }else {
+        } else {
             showAlert("Please select a record to edit.", "You haven't selected any credential record.", Alert.AlertType.WARNING);
         }
     }
@@ -102,7 +106,7 @@ public class DashboardController {
                 credentialManager.deleteCredential(selectedCredential.getId());
                 // Reload the data after deletion
                 credentialTable.setItems(credentialManager.getAllCredentials());
-                showAlert("Credential deleted successfully!", "Please add new record if it was mistake.",  Alert.AlertType.INFORMATION);
+                showAlert("Credential deleted successfully!", "Please add new record if it was mistake.", Alert.AlertType.INFORMATION);
             }
         } else {
             showAlert("Please select a credential to delete.", "You haven't selected any record.", Alert.AlertType.WARNING);
@@ -133,7 +137,7 @@ public class DashboardController {
             controller.setCredential(credential);
 
             dialogStage.showAndWait();
-        } catch ( IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -144,6 +148,7 @@ public class DashboardController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     private boolean showConfirmationDialog(String title, String headerText, String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);

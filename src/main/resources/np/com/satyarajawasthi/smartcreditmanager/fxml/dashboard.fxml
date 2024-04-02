@@ -1,55 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.geometry.Insets?>
-
-<?import javafx.scene.control.TextField?>
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="np.com.satyarajawasthi.smartcreditmanager.controller.DashboardController">
 
-    <top>
-        <!-- HBox for search -->
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-            <TextField fx:id="searchField" promptText="Search..." />
-            <Button text="Search" onAction="#searchCredential"/>
-        </HBox>
-    </top>
-
+    <!-- Center -->
     <center>
         <TableView fx:id="credentialTable">
             <columns>
-                <TableColumn text="ID" fx:id="idColumn"/>
-                <TableColumn text="Tool Name" fx:id="toolNameColumn"/>
-                <TableColumn text="Username" fx:id="usernameColumn"/>
-                <TableColumn text="Password" fx:id="passwordColumn"/>
-                <TableColumn text="Email" fx:id="emailColumn"/>
-                <TableColumn text="Remarks" fx:id="remarksColumn"/>
+                <TableColumn fx:id="idColumn" text="ID"/>
+                <TableColumn fx:id="toolNameColumn" text="Tool Name"/>
+                <TableColumn fx:id="usernameColumn" text="Username"/>
+                <TableColumn fx:id="passwordColumn" text="Password"/>
+                <TableColumn fx:id="emailColumn" text="Email"/>
+                <TableColumn fx:id="remarksColumn" text="Remarks"/>
             </columns>
         </TableView>
     </center>
 
+    <!-- Bottom -->
     <bottom>
         <!-- Use Insets for better padding -->
-        <HBox spacing="10" alignment="CENTER">
+        <HBox alignment="CENTER" spacing="10">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets bottom="10" left="10" right="10" top="10"/>
             </padding>
-            <Button text="Add" onAction="#addCredential"/>
-            <Button text="Edit" onAction="#editCredential"/>
-            <Button text="Delete" onAction="#deleteCredential"/>
+            <Button onAction="#addCredential" text="Add"/>
+            <Button onAction="#editCredential" text="Edit"/>
+            <Button onAction="#deleteCredential" text="Delete"/>
         </HBox>
     </bottom>
 
     <!-- Add overall padding to the BorderPane -->
     <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
+        <Insets bottom="10" left="10" right="10" top="10"/>
     </padding>
+
+    <!-- Top -->
+    <top>
+        <HBox alignment="CENTER_RIGHT" prefHeight="45.0" prefWidth="483.0">
+            <!-- HBox for search -->
+            <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="231.0" spacing="10">
+                <padding>
+                    <Insets bottom="10" left="10" right="10" top="10"/>
+                </padding>
+                <TextField fx:id="searchField" alignment="TOP_LEFT" prefHeight="12.0" prefWidth="149.0"
+                           promptText="Search..."/>
+                <Button onAction="#searchCredential" text="Search"/>
+            </HBox>
+
+            <!-- Profile Icon -->
+            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                <Image url="@../images/profile.png"/>
+            </ImageView>
+        </HBox>
+    </top>
 </BorderPane>

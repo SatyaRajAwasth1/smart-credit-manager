@@ -11,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import np.com.satyarajawasthi.smartcreditmanager.manager.UserManager;
-import np.com.satyarajawasthi.smartcreditmanager.repository.UserRepository;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -89,7 +88,6 @@ public class LoginController {
      */
     private boolean isValidLogin(String username, String password) {
         // TODO Implement login validation logic here
-        // For simplicity, using "root" as the username and password for now
         return username.equals("root") && password.equals("root");
     }
 
