@@ -13,10 +13,10 @@
         <VBox alignment="CENTER" layoutX="140.0" layoutY="83.0" prefHeight="200.0" prefWidth="320.0" spacing="10.0">
             <children>
                 <Label text="Login" />
-                <TextField fx:id="usernameField" promptText="Username" />
+                <TextField fx:id="usernameField" prefHeight="25.0" prefWidth="198.0" promptText="Username" />
                 <PasswordField fx:id="passwordField" promptText="Password" />
                 <Button fx:id="loginButton" onAction="#login" prefHeight="25.0" prefWidth="112.0" text="Login" />
-                <Button fx:id="changePasswordButton" onAction="#changePassword" prefHeight="25.0" prefWidth="114.0" text="Change Password" />
+                <Button fx:id="changePasswordButton" prefHeight="25.0" prefWidth="114.0" text="Change Password" />
                 <Label fx:id="loginMessage" text="" />
             </children>
         </VBox>

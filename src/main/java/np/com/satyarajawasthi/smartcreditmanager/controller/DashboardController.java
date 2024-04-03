@@ -9,8 +9,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -19,7 +17,6 @@ import np.com.satyarajawasthi.smartcreditmanager.model.Credential;
 import np.com.satyarajawasthi.smartcreditmanager.manager.CredentialManager;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -62,7 +59,7 @@ public class DashboardController {
         credentialTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         initializeTable();
         if (UserManager.isFirstLogin()) {
-            UserManager.showChangeCredentialsDialog();
+            LoginController.changePassword();
         }
     }
 

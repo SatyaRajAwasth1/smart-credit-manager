@@ -14,7 +14,7 @@ import np.com.satyarajawasthi.smartcreditmanager.model.User;
  * @author SatyaRajAwasthi
  * @since 11/15/2023
  */
-public class ChangeCredentialsDialogController {
+public class ChangeUserLoginCredentialsController {
 
     @FXML
     private TextField newUsernameField;
@@ -31,6 +31,7 @@ public class ChangeCredentialsDialogController {
     @FXML
     private Label errorMessageLabel;
 
+    @FXML
     private Stage dialogStage;
 
     @FXML
@@ -40,10 +41,6 @@ public class ChangeCredentialsDialogController {
         newUsernameField.setText(defaultUser.getUsername());
         newPasswordField.setText(defaultUser.getPassword());
         newPassphraseField.setText(defaultUser.getPassphrase());
-    }
-
-    public void setDialogStage(Stage dialogStage) {
-        this.dialogStage = dialogStage;
     }
 
     @FXML
@@ -69,5 +66,9 @@ public class ChangeCredentialsDialogController {
     @FXML
     private void cancel() {
         dialogStage.close();
+    }
+
+    public void setDialogStage(Stage dialogStage) {
+        this.dialogStage = dialogStage;
     }
 }
