@@ -1,17 +1,9 @@
 package np.com.satyarajawasthi.smartcreditmanager.manager;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import np.com.satyarajawasthi.smartcreditmanager.controller.ChangeCredentialsDialogController;
 import np.com.satyarajawasthi.smartcreditmanager.model.User;
 import np.com.satyarajawasthi.smartcreditmanager.repository.CredentialRepository;
 import np.com.satyarajawasthi.smartcreditmanager.repository.UserRepository;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -69,31 +61,6 @@ public class UserManager {
         }
     }
 
-    public static void showChangeCredentialsDialog() {
-        try {
-            FXMLLoader loader = new FXMLLoader(UserManager.class.getResource("/np/com/satyarajawasthi/smartcreditmanager/fxml/change_credentials_dialog.fxml"));
-            Parent root = loader.load();
-
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Change Credentials");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.initStyle(StageStyle.UTILITY);
-            dialogStage.initOwner(null); // Set to null or the main stage if you have a reference to it.
-
-            Scene scene = new Scene(root);
-            dialogStage.setScene(scene);
-
-            ChangeCredentialsDialogController controller = loader.getController();
-            controller.setDialogStage(dialogStage);
-
-            // Show the dialog and wait for it to be closed
-            dialogStage.showAndWait();
-
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error while loading credential frame: {0}", e.getMessage());
-        }
-    }
-
     public static void finalizeFirstLoginSetup() {
         try {
             UserRepository.markPasswordAsUpdated();
@@ -104,6 +71,10 @@ public class UserManager {
 
     public static void changeDefaultUser(User updatedUser) {
         UserRepository.updateUser(updatedUser);
+    }
+
+    public static void resetPassword(String password){
+        UserRepository.resetPassword(password);
     }
 
     public static User getUser() {
