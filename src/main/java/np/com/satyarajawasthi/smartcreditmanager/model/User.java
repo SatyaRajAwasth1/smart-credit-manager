@@ -2,7 +2,7 @@ package np.com.satyarajawasthi.smartcreditmanager.model;
 
 /**
  * Represents a User entity.
- *
+ * <p>
  * This class encapsulates user information including their unique identifier (id),
  * username, password, passphrase, and whether the password is updated.
  *
@@ -25,6 +25,14 @@ public class User {
      * @param isPasswordUpdated Whether the user's password is updated (1 for updated, 0 for not updated).
      */
     public User(String username, String password, String passphrase, int isPasswordUpdated) {
+        this.username = username;
+        this.password = password;
+        this.passphrase = passphrase;
+        this.isPasswordUpdated = isPasswordUpdated;
+    }
+
+    public User(int id, String username, String password, String passphrase, int isPasswordUpdated) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.passphrase = passphrase;
@@ -100,7 +108,7 @@ public class User {
      * @return 1 if the password is updated, 0 otherwise.
      */
     public int isPasswordUpdated() {
-        return isPasswordUpdated;
+        return isPasswordUpdated == 0 ? 0 :1;
     }
 
     /**

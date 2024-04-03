@@ -11,13 +11,9 @@ import np.com.satyarajawasthi.smartcreditmanager.model.User;
 import np.com.satyarajawasthi.smartcreditmanager.repository.CredentialRepository;
 import np.com.satyarajawasthi.smartcreditmanager.repository.UserRepository;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,27 +21,26 @@ import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.closeC
 import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.getConnection;
 
 public class UserManager {
-    private static final String CONFIG_URL = "/np/com/satyarajawasthi/smartcreditmanager/config.properties";
     private static final Logger logger = Logger.getLogger(UserManager.class.getName());
+
+    private UserManager() {
+    }
 
     public static boolean isFirstLogin() {
         try {
             // Check if it's the first login by reading from the properties file
-            if (isFirstLoginInPropertiesFile()) {
-                if (!UserRepository.isUserTableExists()) {
-                    return true; // Table doesn't exist yet, consider it as the first login
-                }
-                int passwordUpdatedValue = UserRepository.getPasswordUpdatedValue();
-                return (passwordUpdatedValue == 0);
+            if (!UserRepository.isUserTableExists()) {
+                return true; // Table doesn't exist yet, consider it as the first login
             }
+            int passwordUpdatedValue = UserRepository.getPasswordUpdatedValue();
+            return (passwordUpdatedValue == 0);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.log(Level.SEVERE, "Error getting password updated value: {0}", e.getMessage());
         }
         return false;
     }
 
-    public static void onFirstLogin
-            () {
+    public static void onFirstLogin() {
         Connection connection = null;
         try {
             connection = getConnection();
@@ -95,31 +90,11 @@ public class UserManager {
             dialogStage.showAndWait();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error while loading credential frame: {0}", e.getMessage());
         }
-    }
-
-    private static boolean isFirstLoginInPropertiesFile() {
-        try (InputStream input = UserRepository.class.getResourceAsStream(CONFIG_URL)) {
-            Properties properties = new Properties();
-            properties.load(input);
-            return Boolean.parseBoolean(properties.getProperty("isFirstLogin"));
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error reading from the properties file: {0}", e.getMessage());
-        }
-        return true;
     }
 
     public static void finalizeFirstLoginSetup() {
-        try (FileOutputStream output = new FileOutputStream(CONFIG_URL)) {
-            Properties properties = new Properties();
-            properties.setProperty("isFirstLogin", String.valueOf(false));
-            properties.store(output, null);
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error updating the properties file: {0}", e.getMessage());
-        }
-
-        // Call incrementPasswordUpdateCount from UserRepository
         try {
             UserRepository.markPasswordAsUpdated();
         } catch (SQLException e) {
@@ -127,14 +102,11 @@ public class UserManager {
         }
     }
 
-    public static void changeDefaultUser(User updatedUser){
-        User user = UserRepository.getUser();
-        user.setUsername(updatedUser.getUsername());
-        user.setPassphrase(updatedUser.getPassphrase());
-        user.setPassword(updatedUser.getPassword());
-        UserRepository.updateUser(user);
+    public static void changeDefaultUser(User updatedUser) {
+        UserRepository.updateUser(updatedUser);
     }
-    public static User getUser(){
+
+    public static User getUser() {
         return UserRepository.getUser();
     }
 

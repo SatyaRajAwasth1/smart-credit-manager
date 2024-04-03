@@ -26,10 +26,15 @@ public final class DatabaseUtil {
      * @throws SQLException If a database access error occurs.
      */
     public static Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            DriverManager.registerDriver(new JDBC());
-            connection = DriverManager.getConnection(DATABASE_URL);
-            log.info("New Database Connection session created.");
+        if (connection == null || connection.isClosed() || !connection.isValid(5)) {
+            try {
+                DriverManager.registerDriver(new JDBC());
+                connection = DriverManager.getConnection(DATABASE_URL);
+                log.info("New Database Connection session created.");
+            } catch (SQLException e) {
+                log.severe("Error establishing a new database connection. "+ e);
+                throw e;
+            }
         }
         return connection;
     }

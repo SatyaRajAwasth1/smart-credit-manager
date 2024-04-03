@@ -1,6 +1,7 @@
 package np.com.satyarajawasthi.smartcreditmanager.repository;
 
 import np.com.satyarajawasthi.smartcreditmanager.model.User;
+import np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil;
 import np.com.satyarajawasthi.smartcreditmanager.util.EncryptionUtil;
 
 import java.sql.Connection;
@@ -9,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.closeConnection;
 import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.getConnection;
 
 /**
@@ -18,12 +18,16 @@ import static np.com.satyarajawasthi.smartcreditmanager.util.DatabaseUtil.getCon
  * @author SatyaRajAwasthi
  * @since 10/24/2023
  */
+
 public class UserRepository {
     private static final Logger logger = Logger.getLogger(UserRepository.class.getName());
     private static final String KEY = "5a98beed71b7d65e10d914d3456f25b1";
     private static final String DEFAULT_USERNAME = "root";
     private static final String DEFAULT_PASSWORD = "root";
     private static final String DEFAULT_PASSPHRASE = "DEFAULT";
+
+    private UserRepository() {
+    }
 
     public static void createUserTable(Connection connection) throws SQLException {
         String createTableQuery = """
@@ -75,7 +79,7 @@ public class UserRepository {
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
-                return mapUser(resultSet);
+            return mapUser(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -113,7 +117,7 @@ public class UserRepository {
         }
     }
 
-    public static void updateUser(User updatedUser)  {
+    public static void updateUser(User updatedUser) {
         String updateUserQuery = """
                 UPDATE users
                 SET username = ?,
@@ -122,26 +126,31 @@ public class UserRepository {
                     is_password_updated = ?
                 WHERE id = ?
                 """;
-        try (Connection connection = getConnection();
+        User existingUser = getUser();
+        try (Connection connection = DatabaseUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement(updateUserQuery)) {
-            int passwordUpdatedValue = getPasswordUpdatedValue();
+
+            int passwordUpdatedValue = updatedUser.isPasswordUpdated() + 1;
+
             statement.setString(1, updatedUser.getUsername());
             statement.setString(2, EncryptionUtil.encrypt(updatedUser.getPassword(), KEY));
             statement.setString(3, EncryptionUtil.encrypt(updatedUser.getPassphrase(), KEY));
             statement.setInt(4, ++passwordUpdatedValue);
-            statement.setInt(5, updatedUser.getId());
+            statement.setInt(5, existingUser.getId());
             statement.executeUpdate();
+
+            logger.info("User updated successfully.");
         } catch (SQLException e) {
-            logger.info("Issue updating default credits with: "+updatedUser+ "With error message: "+e.getMessage());
+            logger.info("Issue updating default credits with: " + updatedUser + "With error message: " + e);
         }
-        logger.info("User updated successfully.");
     }
 
     private static User mapUser(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt("id");
         String username = resultSet.getString("username");
         String password = EncryptionUtil.decrypt(resultSet.getString("password"), KEY);
         String passphrase = EncryptionUtil.decrypt(resultSet.getString("passphrase"), KEY);
         int passwordUpdated = resultSet.getInt("is_password_updated");
-        return new User(username, password, passphrase, passwordUpdated);
+        return new User(id, username, password, passphrase, passwordUpdated);
     }
 }
