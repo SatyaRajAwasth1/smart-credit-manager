@@ -129,13 +129,10 @@ public class UserRepository {
         User existingUser = getUser();
         try (Connection connection = DatabaseUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement(updateUserQuery)) {
-
-            int passwordUpdatedValue = updatedUser.isPasswordUpdated() + 1;
-
             statement.setString(1, updatedUser.getUsername());
             statement.setString(2, EncryptionUtil.encrypt(updatedUser.getPassword(), KEY));
             statement.setString(3, EncryptionUtil.encrypt(updatedUser.getPassphrase(), KEY));
-            statement.setInt(4, ++passwordUpdatedValue);
+            statement.setInt(4, existingUser.isPasswordUpdated() + 1);
             statement.setInt(5, existingUser.getId());
             statement.executeUpdate();
 
@@ -143,6 +140,26 @@ public class UserRepository {
         } catch (SQLException e) {
             logger.info("Issue updating default credits with: " + updatedUser + "With error message: " + e);
         }
+    }
+
+    public static void resetPassword(String password) {
+        String updatePasswordQuery = """
+                UPDATE users
+                SET password = ?,
+                    is_password_updated = ?
+                WHERE id = ?
+                """;
+        User existingUser = getUser();
+
+        try (PreparedStatement statement = getConnection().prepareStatement(updatePasswordQuery)) {
+            statement.setString(1, EncryptionUtil.encrypt(password, KEY));
+            statement.setInt(2, existingUser.isPasswordUpdated() + 1);
+            statement.setInt(3, existingUser.getId());
+            statement.executeUpdate();
+
+            logger.info("Password reset successfully.");
+        } catch (SQLException e) {
+            logger.info("Issue resetting password: " + password + "With error message: " + e);        }
     }
 
     private static User mapUser(ResultSet resultSet) throws SQLException {

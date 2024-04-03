@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import np.com.satyarajawasthi.smartcreditmanager.manager.UserManager;
 import np.com.satyarajawasthi.smartcreditmanager.model.User;
+import np.com.satyarajawasthi.smartcreditmanager.util.DialogUtils;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -50,8 +51,10 @@ public class LoginController {
         if (isFirstTimeUser) {
             changePasswordButton.setText("Change Password");
             UserManager.onFirstLogin();
+            changePasswordButton.setOnAction(e -> changePassword());
         } else {
             changePasswordButton.setText("Forgot Password");
+            changePasswordButton.setOnAction(actionEvent -> resetPassword());
         }
     }
 
@@ -75,9 +78,16 @@ public class LoginController {
      * Handles the change password button click event.
      * Implements the logic for changing or recovering the user's password.
      */
-    public void changePassword() {
-        UserManager.showChangeCredentialsDialog();
+    public static void changePassword() {
+        DialogUtils.showDialog("/np/com/satyarajawasthi/smartcreditmanager/fxml/change_credentials_dialog.fxml",
+                "Change Credentials", ChangeUserLoginCredentialsController.class);
     }
+
+    public static void resetPassword() {
+        DialogUtils.showDialog("/np/com/satyarajawasthi/smartcreditmanager/fxml/reset_password.fxml",
+                "Reset Password", ResetPasswordController.class);
+    }
+
 
     /**
      * Validates the user's login credentials.
