@@ -67,7 +67,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                np.com.satyarajawasthi.smartcreditmanager/np.com.satyarajawasthi.smartcreditmanager.HelloApplication
+                                np.com.satyarajawasthi.smartcreditmanager/np.com.satyarajawasthi.smartcreditmanager.Main
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

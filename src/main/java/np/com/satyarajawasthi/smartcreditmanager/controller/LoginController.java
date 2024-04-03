@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import np.com.satyarajawasthi.smartcreditmanager.manager.UserManager;
+import np.com.satyarajawasthi.smartcreditmanager.model.User;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -64,7 +65,6 @@ public class LoginController {
 
         if (isValidLogin(username, password)) {
             onSuccessfulLogin();
-            // Redirect to the main application screen
         } else {
             loginMessage.setTextFill(Color.RED);
             loginMessage.setText("Invalid username or password");
@@ -87,8 +87,8 @@ public class LoginController {
      * @return True if the credentials are valid, false otherwise.
      */
     private boolean isValidLogin(String username, String password) {
-        // TODO Implement login validation logic here
-        return username.equals("root") && password.equals("root");
+        User user = UserManager.getUser();
+        return username.equals(user.getUsername()) && password.equals(user.getPassword());
     }
 
     private void onSuccessfulLogin() {
