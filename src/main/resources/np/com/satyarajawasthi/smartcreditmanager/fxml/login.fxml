@@ -3,23 +3,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="np.com.satyarajawasthi.smartcreditmanager.controller.LoginController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="np.com.satyarajawasthi.smartcreditmanager.controller.LoginController">
 
-<!--    <stylesheets>
+    <!--    <stylesheets>
         <URL value="/np/com/satyarajawasthi/smartcreditmanager/css/styles.css" />
     </stylesheets>-->
 
-    <children>
-        <VBox alignment="CENTER" layoutX="140.0" layoutY="83.0" prefHeight="200.0" prefWidth="320.0" spacing="10.0">
-            <children>
-                <Label text="Login" />
-                <TextField fx:id="usernameField" prefHeight="25.0" prefWidth="198.0" promptText="Username" />
-                <PasswordField fx:id="passwordField" promptText="Password" />
-                <Button fx:id="loginButton" onAction="#login" prefHeight="25.0" prefWidth="112.0" text="Login" />
-                <Button fx:id="changePasswordButton" prefHeight="25.0" prefWidth="114.0" text="Change Password" />
-                <Label fx:id="loginMessage" text="" />
-            </children>
-        </VBox>
-    </children>
-
+    <VBox alignment="CENTER" layoutX="140.0" layoutY="83.0" prefHeight="200.0" prefWidth="320.0" spacing="10.0">
+        <Label text="Login"/>
+        <TextField fx:id="usernameField" prefHeight="25.0" prefWidth="198.0" promptText="Username"/>
+        <PasswordField fx:id="passwordField" promptText="Password"/>
+        <Button fx:id="loginButton" onAction="#login" prefHeight="25.0" prefWidth="112.0" text="Login"/>
+        <Button fx:id="changePasswordButton" prefHeight="25.0" prefWidth="114.0" text="Change Password"/>
+    </VBox>
 </AnchorPane>
