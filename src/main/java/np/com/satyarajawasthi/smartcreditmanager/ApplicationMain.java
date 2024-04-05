@@ -1,6 +1,5 @@
 package np.com.satyarajawasthi.smartcreditmanager;
 
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -17,7 +16,7 @@ import java.util.Objects;
  * @author SatyaRajAwasth1
  * @since 10/24/2023
  */
-public class Main extends Application {
+public class ApplicationMain extends javafx.application.Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -26,7 +25,8 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // Load the main login scene from FXML
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/np/com/satyarajawasthi/smartcreditmanager/fxml/login.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(
+                getClass().getResource("/np/com/satyarajawasthi/smartcreditmanager/fxml/login.fxml")));
 
         // Configure the primary stage
         stage.setTitle("Smart Credit Manager - Login");

@@ -31,6 +31,7 @@ public class ChangeUserLoginCredentialsController {
     @FXML
     private Label errorMessageLabel;
 
+    @FXML
     private Stage dialogStage;
 
     @FXML
@@ -65,5 +66,9 @@ public class ChangeUserLoginCredentialsController {
     @FXML
     private void cancel() {
         dialogStage.close();
+    }
+
+    public void setDialogStage(Stage dialogStage) {
+        this.dialogStage = dialogStage;
     }
 }

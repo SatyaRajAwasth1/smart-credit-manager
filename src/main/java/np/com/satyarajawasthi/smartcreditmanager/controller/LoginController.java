@@ -4,14 +4,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import np.com.satyarajawasthi.smartcreditmanager.manager.SessionManager;
 import np.com.satyarajawasthi.smartcreditmanager.manager.UserManager;
 import np.com.satyarajawasthi.smartcreditmanager.model.User;
+import np.com.satyarajawasthi.smartcreditmanager.util.AlertUtil;
 import np.com.satyarajawasthi.smartcreditmanager.util.DialogUtils;
 
 import java.io.IOException;
@@ -31,9 +32,6 @@ public class LoginController {
 
     @FXML
     private PasswordField passwordField;
-
-    @FXML
-    private Label loginMessage;
 
     @FXML
     private Button loginButton;
@@ -67,10 +65,11 @@ public class LoginController {
         String password = passwordField.getText();
 
         if (isValidLogin(username, password)) {
+            SessionManager.startSessionTimer();
             onSuccessfulLogin();
+            AlertUtil.showAlert("Login Successful", Alert.AlertType.INFORMATION);
         } else {
-            loginMessage.setTextFill(Color.RED);
-            loginMessage.setText("Invalid username or password");
+            AlertUtil.showAlert("Invalid Credentials", Alert.AlertType.ERROR);
         }
     }
 
