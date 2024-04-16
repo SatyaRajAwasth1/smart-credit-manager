@@ -9,12 +9,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import np.com.satyarajawasthi.smartcreditmanager.manager.CredentialManager;
 import np.com.satyarajawasthi.smartcreditmanager.manager.UserManager;
 import np.com.satyarajawasthi.smartcreditmanager.model.Credential;
-import np.com.satyarajawasthi.smartcreditmanager.manager.CredentialManager;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -58,9 +61,42 @@ public class DashboardController {
         credentialManager = new CredentialManager();
         credentialTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         initializeTable();
+        passwordColumn.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    HBox container = new HBox();
+                    Label passwordLabel = new Label(maskPassword(item));
+                    ImageView eyeIcon = new ImageView(new Image("@../images/eye-close.svg"));
+                    eyeIcon.getStyleClass().add("eye-icon");
+                    eyeIcon.setFitWidth(16);
+                    eyeIcon.setFitHeight(16);
+                    eyeIcon.setOnMouseClicked(event -> {
+                        if (passwordLabel.getText().equals(item)) {
+                            passwordLabel.setText(maskPassword(""));
+                            eyeIcon.setImage(new Image("@../images/eye-open.svg"));
+                        } else {
+                            passwordLabel.setText(item);
+                            eyeIcon.setImage(new Image("@../images/eye-close.svg"));
+                        }
+                    });
+                    container.getChildren().addAll(passwordLabel, eyeIcon);
+                    setGraphic(container);
+                }
+            }
+        });
+
         if (UserManager.isFirstLogin()) {
             LoginController.changePassword();
         }
+    }
+
+    private String maskPassword(String password) {
+        return "*".repeat(password.length());
     }
 
     private void initializeTable() {

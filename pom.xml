@@ -11,11 +11,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.9.2</junit.version>
+        <junit.version>5.10.2</junit.version>
     </properties>
 
     <dependencies>
-        <!-- JavaFX dependencies -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -26,15 +25,13 @@
             <artifactId>javafx-fxml</artifactId>
             <version>17.0.6</version>
         </dependency>
-
-        <!-- SQLite JDBC driver -->
+        <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.43.2.1</version>
+            <version>3.45.2.0</version>
         </dependency>
 
-        <!-- JUnit Jupiter for testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -51,99 +48,63 @@
 
     <build>
         <plugins>
-            <!-- Include maven-dependency-plugin to copy dependencies -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.6.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeScope>runtime</includeScope>
-                            <outputDirectory>${project.build.directory}/dependency-jars</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Include maven-jar-plugin to package the application -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>np.com.satyarajawasthi.smartcreditmanager.Main</mainClass>
-                        </manifest>
-                    </archive>
+                    <source>17.0.6</source>
+                    <target>17.0.6</target>
                 </configuration>
             </plugin>
 
-            <!-- Include maven-jlink-plugin to create a custom runtime image -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jlink-plugin</artifactId>
-                <version>3.0.0</version>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <id>create-runtime-image</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>generate-jlink-image</goal>
-                        </goals>
+                        <!-- Default configuration for running with: mvn clean javafx:run -->
+                        <id>default-cli</id>
                         <configuration>
-                            <launcher>
-                                <name>smart-credit-manager</name>
-                                <jlinkImageName>smart-credit-manager</jlinkImageName>
-                                <outputDirectory>${project.build.directory}/jlink-image</outputDirectory>
-                            </launcher>
+                            <mainClass>
+                                np.com.satyarajawasthi.smartcreditmanager/np.com.satyarajawasthi.smartcreditmanager.ApplicationMain
+                            </mainClass>
+                            <launcher>app</launcher>
+                            <jlinkZipName>app</jlinkZipName>
+                            <jlinkImageName>app</jlinkImageName>
+                            <noManPages>true</noManPages>
+                            <stripDebug>true</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <!-- Include exec-maven-plugin to invoke jpackage tool -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.2</version>
                 <executions>
                     <execution>
-                        <id>create-installer</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <executable>jpackage</executable>
-                            <workingDirectory>${project.build.directory}</workingDirectory>
-                            <arguments>
-                                <argument>--type</argument>
-                                <argument>exe</argument>
-                                <argument>--input</argument>
-                                <argument>jlink-image</argument>
-                                <argument>--dest</argument>
-                                <argument>${project.build.directory}/installer</argument>
-                                <argument>--name</argument>
-                                <argument>smart-credit-manager</argument>
-                                <argument>--main-jar</argument>
-                                <argument>${project.build.finalName}.jar</argument>
-                                <argument>--main-class</argument>
-                                <argument>np.com.satyarajawasthi.smartcreditmanager.Main</argument>
-                                <argument>--runtime-image</argument>
-                                <argument>${project.build.directory}/jlink-image</argument>
-                            </arguments>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>
+                                        np.com.satyarajawasthi.smartcreditmanager/np.com.satyarajawasthi.smartcreditmanager.ApplicationMain
+                                    </mainClass>
+                                </transformer>
+                            </transformers>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 </project>
