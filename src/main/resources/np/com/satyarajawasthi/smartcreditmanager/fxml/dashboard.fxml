@@ -4,7 +4,6 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="np.com.satyarajawasthi.smartcreditmanager.controller.DashboardController">
 
@@ -15,15 +14,7 @@
                 <TableColumn fx:id="idColumn" text="ID"/>
                 <TableColumn fx:id="toolNameColumn" text="Tool Name"/>
                 <TableColumn fx:id="usernameColumn" text="Username"/>
-                <TableColumn fx:id="passwordColumn" text="Password">
-                    <cellFactory>
-                        <PropertyValueFactory property="password"/>
-                    </cellFactory>
-                    <cellValueFactory>
-                        <PropertyValueFactory property="password"/>
-                    </cellValueFactory>
-                </TableColumn>
-
+                <TableColumn fx:id="passwordColumn" text="Password"/>
                 <TableColumn fx:id="emailColumn" text="Email"/>
                 <TableColumn fx:id="remarksColumn" text="Remarks"/>
             </columns>
